@@ -1,0 +1,860 @@
+signature TAG_E =
+
+ N, NP, Na, Sa, VPa, S, T, Sa' : type;
+
+  
+    C_John, C_Mary : NP;
+
+    C_a : Na; 
+
+    C_every : Na;
+
+    C_boy, C_woman, C_man : Na -> NP;
+
+    C_smart,  C_kind : Na->Na;
+
+
+    C_sleeps : Sa -> VPa -> NP -> S;
+
+    C_loves :  Sa -> VPa -> NP -> NP -> S;
+
+
+    C_doesnot : VPa;
+
+    C_itisnotthecase : Sa;
+
+
+    C_certainly : Sa -> Sa;
+
+    C_fast : VPa -> VPa;
+
+
+    C_wants : Sa -> VPa -> NP -> Sa'; 
+
+    C_tosleep : Sa' -> S;
+
+
+    Closure : S -> T;
+
+    
+    I_vp : VPa;
+
+    I_s : Sa;
+
+    C_claims' :  Sa -> VPa -> NP -> Sa';
+
+    C_claims :  Sa -> VPa -> NP -> Sa;
+
+
+
+
+end
+
+
+signature evhol=
+
+    v, e, t : type;
+
+    infix & : t -> t -> t;  
+    
+    infix > : t -> t -> t;
+
+    prefix - : t -> t;
+
+    binder All : (e=>t) -> t;
+    binder Ex : (e=>t) -> t;
+
+    john, mary : e;
+   
+    cat,boy,woman,man : e => t;
+    smart, kind : e=>t;
+   
+    
+    
+    binder Ex_unique : (e=>t) => t;
+
+
+
+    sleep_e : v => t;
+
+    binder Ex_v : (v=>t) -> t;
+
+    arg0, arg1, arg2 : v => e => t;
+    Arg1, Arg2, Arg3 : v => v => t;
+
+
+ 
+    omega = ((v => t) -> t) : type;
+
+    amr_qnp = ((e => omega) -> omega) : type;
+
+
+    amr_noun = lambda noun. lambda D. D noun : (e=>t) -> ((e=>t) -> amr_qnp) -> amr_qnp;
+
+    Truefunction : v => t;
+
+    fast_e, certain_e: v => t;
+
+    love_e: v => t;
+
+    want_e: v => t;
+
+    claim_e : v => t;
+
+    
+
+
+    
+
+
+end
+
+
+
+lexicon evhol_sem(TAG_E): evhol=
+
+    N := (e =>t);
+
+    NP := amr_qnp;
+
+    Na := (e =>t) -> amr_qnp;
+
+    Sa := omega -> omega;
+
+    VPa := (e=>omega) -> (e=>omega);
+
+    S := omega;
+
+    T := t;
+
+    Sa' := ( ( (e => omega) -> omega) -> omega ) -> omega;
+
+
+
+
+    C_John := lambda P. P john;
+
+    C_Mary := lambda P. P mary;
+
+
+    C_a := lambda P. lambda Q. lambda h. Ex x. (P x) & (Q x h);
+
+    C_every := lambda P. lambda Q. lambda h. All x. (P x) > (Q x h);
+
+    C_boy := amr_noun boy;
+
+    C_woman := amr_noun woman;
+
+    C_man := amr_noun man;
+
+    C_sleeps := lambda advS. lambda advV. lambda subj. advS ( subj ( advV (Lambda x. lambda cont . Ex_v w. (sleep_e w) & (arg0 w x) & (cont w) ) ) ) ;
+
+    C_doesnot := lambda V. Lambda x. lambda h. - (V x h);
+
+    C_itisnotthecase := lambda S. lambda h. - (S h);
+
+
+    C_fast := lambda m. lambda V. m (Lambda x. lambda h. V x (Lambda u. (fast_e u) & (h u) ) );
+
+    C_certainly := lambda m. lambda V. m (lambda h. V (Lambda u. (certain_e u) & (h u) ) );
+
+    C_wants := lambda adjS. lambda adjV. lambda subj. lambda Pred.  adjS (  subj ( adjV (  Lambda x. lambda h. Ex_v w. (want_e w) & (h w) & (arg0 w x) & (Pred (lambda Q. Q x) (Lambda r. Arg1 w r)) ) ) ); 
+
+    C_tosleep := lambda cont. cont (lambda subj. subj (Lambda x. lambda f. Ex_v u. (sleep_e u) & (arg0 u x) & (f u) ) );
+
+    I_vp := lambda x.x;
+
+    I_s := lambda x.x;
+
+    Closure := lambda S. S Truefunction;
+
+    C_smart := lambda D. lambda n. lambda q. lambda f. D (Lambda x. (n x) & (smart x) ) q f ;
+
+    C_kind := lambda D. lambda n. lambda q. lambda f. D (Lambda x. (n x) & (kind x) ) q f ;
+
+    C_loves := lambda advS. lambda advV. lambda subj. lambda obj. advS ( subj ( advV (Lambda x. (obj (Lambda y. lambda cont . Ex_v w. (love_e w) & (arg0 w y) & (arg1 w x) & (cont w) ) ) ) ) ) ;
+
+    C_claims' := lambda adjS. lambda adjV. lambda subj. lambda Pred.  adjS (  subj ( adjV (  Lambda x. lambda h. Ex_v w. (claim_e w) & (h w) & (arg0 w x) & (Pred (lambda Q. Q x) (Lambda r. Arg1 w r)) ) ) ); 
+
+
+    C_claims := lambda adjS. lambda adjV. lambda subj. lambda Pred.  adjS (  subj ( adjV (  Lambda x. lambda h. Ex_v w. (claim_e w) & (h w) & (arg0 w x) & (Pred (Lambda r. Arg1 w r)) ) ) ); 
+
+
+
+
+
+end
+
+signature trees =
+    tree:type;
+    (* The ranked alphabet for tree terms *)
+    (* First symbols of rank one *)
+    N1,NP1,V1,Adv1,VP1,Adj1,AP1,S1,COMP1,Det1,Prep1,WH1,PRO1: tree -> tree;
+    (* Then symb ols of rank two *)       
+    N2,NP2,PP2,VP2,Adj2,S2:tree -> tree -> tree;
+    (* Symbols of rank 3, 4, and 5 *)
+    S3: tree -> tree -> tree -> tree;
+    S4: tree -> tree -> tree -> tree -> tree;
+    S5: tree -> tree -> tree -> tree -> tree -> tree;
+
+    Conj1: tree -> tree;
+    
+    (* The identity function on trees *)
+    I=lambda x.x:tree -> tree;
+
+    (* Symbols of rank 0 (constants) *)
+    John,Peter,Paul,Mary,
+    who,
+    sleeps,
+    barks,
+    loves,
+    to,
+    love,
+    seems,
+    claims, think,
+    does,
+    matters,
+    that,
+    certainly,usually,
+    hence,
+    a,some,every,
+    everyone,someone,
+    boy,cat,man,woman,
+    big,smart,fast,
+    wants,sleep, itisnotthecase, doesnot,
+    epsilon:tree;
+
+    kicked,the,bucket:tree;
+
+    in_order,arrive,on_time,left,early:tree;
+
+    (* A few constructor to associate (functions to) trees with anchors, i.e., constants *)
+    transitive_verb =
+    lambda v. lambda S a s o.S(S2 s (a (VP2 (V1 v) o))):
+        tree ->
+        (tree -> tree) ->
+            (tree -> tree) ->
+            tree ->
+                tree ->
+                tree ;
+
+    obj_top_transitive_infinitive_verb =
+    lambda v. lambda S a o s.S2 o (S (S2 s (a (VP2 (V1 to) (VP1 (V1 v)))))):
+        tree ->
+        (tree -> tree) ->
+            (tree -> tree) ->
+            tree ->
+                tree ->
+                tree ;
+
+    obj_int_transitive_infinitive_verb =
+    lambda v. lambda S a w s.S2 w (S (S2 s (a (VP2 (V1 to) (VP1 (V1 v)))))):
+        tree ->
+        (tree -> tree) ->
+            (tree -> tree) ->
+            tree ->
+                tree ->
+                tree ;
+    
+    intransitive_verb =
+    lambda v. lambda S a s.S(S2 s (a (VP1 (V1 v)))):
+        tree ->
+        (tree -> tree) ->
+            (tree -> tree) ->
+            tree ->
+                tree ;
+    
+    vp_adv = lambda a. lambda A x. A (VP2 (Adv1 a) x) :
+    tree ->
+        (tree -> tree) ->
+        tree ->
+            tree ;
+    
+    vp_adv_right = lambda a. lambda A x. A (VP2 x (Adv1 a)) :
+    tree ->
+        (tree -> tree) ->
+        tree ->
+            tree ;
+    
+    s_adv_init = lambda a. lambda S x. S (S2 (Adv1 a) x) :
+    tree ->
+        (tree -> tree) ->
+        tree ->
+            tree ;
+    
+    proper_noun = lambda n. NP1 n: tree -> tree;
+    
+    noun = lambda n. lambda det. det (N1 n) : tree -> (tree -> tree) -> tree;
+
+    det = lambda det. lambda x. NP2 (Det1 det) x : tree -> tree -> tree ;
+    
+    g_sleeps = intransitive_verb sleeps :
+    (tree -> tree) ->
+        (tree -> tree) ->
+        tree ->
+            tree ;
+
+    g_certainly = vp_adv certainly :
+    (tree -> tree) ->
+        tree ->
+        tree ;
+
+    g_usually = vp_adv usually :
+    (tree -> tree) ->
+        tree ->
+        tree ;
+
+    g_John = proper_noun John : tree ;
+
+    g_matters = lambda a s.S2 s (a (VP1 (V1 matters))) : (tree -> tree) -> tree -> tree;
+
+    g_that_sleeps = lambda a s. S2 (COMP1 that) (S2 s (a(VP1 (V1 sleeps)))) : (tree -> tree) -> tree -> tree;
+
+    raising_verb = lambda pred. lambda adv_vp vp. adv_vp (VP2 (V1 pred) vp) :
+    tree ->
+        (tree -> tree) -> tree -> tree;
+    
+    prop_attitude = lambda v. lambda S a s c.S (S2 s (a (VP2 (V1 v) c))) :
+    tree ->
+        (tree -> tree) ->
+        (tree -> tree) ->
+            tree ->
+            (tree -> tree) ;
+
+    prop_attitude_int = lambda v. lambda S a s c.S2 (V1 does) (S (S2 s (a (VP2 (V1 v) c)))):
+    tree ->
+        (tree -> tree) ->
+        (tree -> tree) ->
+            tree ->
+            (tree -> tree) ;
+
+    determiner = lambda det. lambda n. NP2 (Det1 det) n: tree -> tree -> tree ;
+    
+    adj = lambda adj. lambda a n.a(N2 (Adj1 adj) n) : tree -> (tree -> tree) -> tree -> tree;    
+
+    control_verb = lambda pred. lambda adv_s adv_vp subj c. adv_s (S2 subj (adv_vp (VP2 (V1 pred) (c (PRO1 epsilon))))) :
+    tree ->
+        (tree -> tree) -> (tree -> tree) -> tree -> (tree -> tree) -> tree;
+    
+    infinitive_itv_controlled = lambda pred. lambda control. control (lambda subj. S2 (NP1 subj) (VP2 (V1 to) (VP1 pred))) :
+        tree -> ((tree -> tree) -> tree) -> tree;
+
+
+    conj_sub_initial = lambda conj. lambda sub matrix s .S2 (S2 (Conj1 conj) (sub (PRO1 epsilon))) (matrix s) :
+    tree -> (tree -> tree) -> (tree -> tree) -> tree -> tree;
+
+    
+    infinitive_itv = lambda pred. lambda a subj. S2 (NP1 subj) (a (VP2 (V1 to) (VP1 pred))) :
+        tree -> (tree -> tree) -> tree -> tree;
+
+    intransitive_hidden_vp_verb =
+    lambda v. lambda S hole a s.S(hole (lambda s'. S2 s' (a (VP1 (V1 v)))) s):
+        tree ->
+        (tree -> tree) ->
+            ((tree -> tree) -> (tree -> tree)) ->
+            (tree -> tree) ->
+                tree ->
+                tree ;
+    
+
+    
+    
+end
+
+
+signature strings =
+    o:type;
+    string = o->o:type;
+    (* We define the concatenation as function composition *)
+    infix + = lambda a b z.a (b z):string -> string -> string;
+    (* Hence the empty string is the identity function *)
+    E=lambda x.x:string;
+    
+    binary = lambda x y. x + y: string -> string -> string ;
+    ternary = lambda x y z. x + y + z:  string -> string -> string -> string;
+    
+    John,Peter,Paul,Mary,
+    who,
+    sleeps,sleep,
+    barks,
+    loves,
+    to,love,
+    seems,
+    claims, think,
+    does,
+    matters,
+    that,
+    certainly,usually, fast,
+    hence,
+    a,every,some,
+    everyone,someone,
+    man,woman,cat,boy,
+    big, smart, 
+    wants,
+    kicked,the,bucket,
+    in, order,
+    arrive,
+    on, time,
+    left, it, is, case, not,
+    early: string
+
+        
+end
+
+
+lexicon yield(trees):strings =
+    (* Trees are interpreted as strings *)
+    tree := string;
+
+    (* Depending on their arities, symbols of the ranked alphabet are interpreted *)
+    (* as the function concatenating their children *)
+    N1,NP1,V1,Adv1,VP1,Adj1,AP1,S1,COMP1,Det1,Prep1,WH1,PRO1,Conj1 := lambda x.x;
+    N2,NP2,PP2,VP2,Adj2,S2 := binary;
+    S3 := ternary;
+    S4 := lambda x y z t.x+y+z+t;
+    S5 := lambda x y z t u .x+y+z+t+u;
+
+    (* Symbols of rank 0 are interpreted as strings *)
+    John := John;
+    Peter := Peter;
+    Paul := Paul;
+    Mary := Mary;
+    who := who;
+    sleeps := sleeps;
+    barks := barks;
+    loves := loves;
+    to := to;
+    love := love;
+    seems := seems;
+    claims := claims;
+    think := think;
+    does := does;
+    matters := matters;
+    that := that;
+    certainly := certainly;
+    usually := usually;
+    hence:=hence;
+    fast := fast;
+    smart := smart;
+
+    a := a;
+    some := some;
+    every := every;
+    everyone := everyone;
+    someone := someone;
+
+    boy := boy;
+    cat := cat;
+    man := man;
+    woman := woman;
+
+    epsilon := E;
+
+    big := big;
+    smart := smart;
+
+    wants := wants;
+    sleep := sleep;
+
+    kicked := kicked;
+    the := the;
+    bucket := bucket;
+
+    in_order := in+order;
+    arrive := arrive;
+    on_time := on+time;
+    left := left;
+    early := early;
+
+    itisnotthecase := it + is + not + the + case + that;
+    doesnot := does + not;
+end
+
+signature TAG =
+    N,NP,VP,S,WH:type;
+    Na, VPa, Sa, Sa':type;
+
+    C_John,C_Peter,C_Paul,C_Mary : NP;
+
+    C_who : WH;
+
+    C_sleeps : Sa -> VPa -> NP -> S;
+
+    C_barks : Sa -> VPa -> NP -> S;
+
+    C_loves, C_to_love : Sa -> VPa -> NP -> NP -> S;
+
+    C_to_love_int : Sa -> VPa -> WH -> NP -> S;
+
+    C_seems : VPa -> VPa;
+        
+    C_claims, C_does_think : Sa -> VPa -> NP -> Sa;
+
+    C_matters : VPa -> S -> S;
+
+    C_that_sleeps : VPa -> NP -> S; 
+    
+    C_usually, C_fast : VPa -> VPa;
+
+
+    C_hence, C_certainly : Sa -> Sa;
+
+    I_vp: VPa;
+    I_s : Sa;
+
+
+    C_a, C_some, C_every : Na;
+    C_everyone,C_someone : NP ;
+
+    C_boy, C_cat, C_man, C_woman : Na -> NP;
+
+    C_loves_ows : Sa -> VPa -> NP -> NP -> S;
+
+    C_big, C_smart, C_kind : Na -> Na;
+
+    C_wants : Sa -> VPa -> NP -> Sa' ;
+    C_claims' : Sa -> VPa -> NP -> Sa' ;
+
+
+    C_tosleep : Sa' -> S;
+
+    C_kicked : Sa -> VPa -> NP -> NP -> S;
+    C_the : Na;
+    C_bucket : Na -> NP;
+
+    C_kicked_the_bucket : Sa -> VPa -> NP -> S;
+
+    Sa'' : type;
+    Sws : type;
+    
+    C_in_order : Sws -> Sa'';
+    C_on_time : VPa;
+    C_to_arrive : VPa -> Sws;
+    C_left : Sa -> Sa'' -> VPa -> NP -> S;
+    C_early : VPa;
+
+    I_s'' : Sa'';
+
+    raise = lambda x.lambda P.P x: NP -> ((NP -> S) -> S);
+    raise_noun = lambda n.lambda det. raise (n det): (Na -> NP) -> Na -> ((NP -> S) -> S);
+
+    C_doesnot: VPa;
+    C_itisnotthecase: Sa;
+    
+end
+
+
+
+lexicon TAGEtoTAG(TAG_E): TAG=
+    N := NP;
+    NP := NP;
+    Na := Na;
+    Sa := Sa;
+    VPa := VPa;
+    S := S;
+    T := S; 
+    Sa' := Sa';
+
+  
+    C_John := C_John;
+    C_Mary := C_Mary;
+
+    C_a := C_a;
+
+    C_every := C_every; 
+
+    C_boy := C_boy;
+
+    C_woman := C_woman;
+
+    C_man := C_man;
+
+    C_smart := C_smart;
+
+    C_kind := C_kind;
+
+    C_sleeps := C_sleeps;
+
+    C_loves :=   C_loves;
+
+
+    C_doesnot := C_doesnot;
+
+    C_itisnotthecase := C_itisnotthecase;
+
+
+    C_certainly := C_certainly; 
+
+    C_fast := C_fast; 
+
+
+    C_wants := C_wants; 
+
+    C_tosleep := C_tosleep;
+
+
+    Closure := lambda x. x;
+
+    
+    I_vp := I_vp;
+
+    I_s := I_s;
+
+
+    C_claims' :=  C_claims';
+
+    C_claims := C_claims;
+
+
+
+end
+signature derivations =
+    N,NP,VP,S,WH:type;
+
+    c_John,c_Peter,c_Paul,c_Mary : NP;
+
+    c_who : WH;
+
+    c_sleeps : (S -> S) -> (VP -> VP) -> NP -> S;
+
+    c_barks : (S -> S) -> (VP -> VP) -> NP -> S;
+
+    c_loves, c_to_love : (S -> S) -> (VP -> VP) -> NP -> NP -> S;
+
+    c_to_love_int : (S -> S) -> (VP -> VP) -> WH -> NP -> S;
+
+    c_seems : (VP -> VP) -> VP -> VP;
+    
+    c_claims, c_does_think : (S -> S) -> (VP -> VP) -> NP -> (S -> S);
+
+    c_matters : (VP -> VP) -> S -> S;
+    c_that_sleeps : (VP -> VP) -> NP -> S;
+
+    c_fast, c_usually : (VP -> VP) -> (VP -> VP);
+
+    c_hence, c_certainly : (S -> S) -> (S -> S);
+
+    I_vp: VP -> VP;
+    I_s : S -> S;
+
+    (* Section 5.3.2. Quantification *)
+
+    c_a, c_some, c_every : N -> NP;
+    c_everyone,c_someone : NP ;
+
+    c_boy, c_cat, c_man, c_woman : (N -> NP) -> NP;
+
+    c_loves_ows : (S -> S) -> (VP -> VP) -> NP -> NP -> S;
+
+    c_big, c_smart : (N -> NP) -> (N -> NP);
+
+    c_wants, c_claims': (S -> S) -> (VP -> VP) -> NP -> (NP -> S) -> S;
+
+    c_to_sleep : ((NP ->S) -> S) -> S;
+
+    c_kicked : (S -> S) -> (VP -> VP) -> NP -> NP -> S;
+    c_the : N -> NP;
+    c_bucket : (N -> NP) -> NP;
+    c_kicked_the_bucket : (S -> S) -> (VP -> VP) -> NP -> S;
+
+    c_in_order : (NP -> S) -> (NP -> S) -> NP -> S;
+    c_on_time : VP -> VP;
+    c_to_arrive : (VP -> VP) -> NP -> S;
+    c_left : (S -> S) -> ((NP -> S) -> (NP -> S)) -> (VP -> VP) -> NP -> S;
+    c_early : VP -> VP;
+
+    I_s'' : (NP -> S) -> (NP -> S);
+
+    c_itisnotthecase : S -> S;
+    c_doesnot : VP->VP;
+
+
+end
+
+lexicon derived_trees(derivations):trees =
+
+    N,NP,VP,S,WH:= tree;
+    
+    c_John := proper_noun John;
+    c_Peter := proper_noun Peter;
+    c_Paul := proper_noun Paul;
+    c_Mary := proper_noun Mary;
+
+    c_who := WH1 who;
+
+    c_sleeps := intransitive_verb sleeps;
+
+    c_barks := intransitive_verb barks;
+
+    c_loves := transitive_verb loves;
+
+    c_to_love := obj_top_transitive_infinitive_verb love;
+
+    c_to_love_int := obj_int_transitive_infinitive_verb love;
+
+    c_seems := raising_verb seems ;
+    
+    c_claims := prop_attitude claims;
+    c_does_think := prop_attitude_int think;
+
+    c_matters := g_matters;
+    c_that_sleeps := g_that_sleeps;
+
+    c_fast := vp_adv_right fast;
+    c_usually := vp_adv usually;
+
+    c_hence := s_adv_init hence;
+
+    c_certainly := s_adv_init certainly;
+
+
+    I_vp,I_s := I;
+
+    (* Section 5.3.2. Quantification *)
+
+    c_a := determiner a;
+    c_some := determiner some;
+    c_every := determiner every;
+    c_everyone := NP1 everyone;
+    c_someone := NP1 someone;
+
+    c_boy := noun boy;
+    c_cat := noun cat;
+    c_man := noun man;
+    c_woman := noun woman;
+
+    c_loves_ows := transitive_verb loves;
+
+    c_big := adj big;
+    c_smart := adj smart;
+
+    c_wants := control_verb wants;
+    c_claims' := control_verb claims;
+
+    c_to_sleep := infinitive_itv_controlled sleep;
+
+    c_kicked := transitive_verb kicked;
+    c_the := determiner the;
+    c_bucket := noun bucket;
+
+    c_kicked_the_bucket := lambda s v np . (transitive_verb kicked) s v np ((noun bucket) (determiner the));
+
+    c_in_order := conj_sub_initial in_order;
+    c_on_time := vp_adv_right on_time (lambda x.x);
+    c_to_arrive := infinitive_itv arrive;
+    c_left := intransitive_hidden_vp_verb left;
+    c_early := vp_adv_right early (lambda x.x);
+
+    I_s'' := lambda x.x;
+
+    c_itisnotthecase := s_adv_init itisnotthecase (lambda x.x);
+    c_doesnot := vp_adv doesnot (lambda x.x);
+
+    
+end
+
+lexicon yield_derived_trees = yield << derived_trees
+
+
+
+
+
+lexicon TAG_derivations(TAG):derivations =
+
+    N := N;
+    NP:= NP;
+    VP:= VP;
+    S:= S;
+    WH:= WH;
+    
+    Na := N -> NP;
+    VPa := VP -> VP;
+    Sa := S -> S;
+    Sa' := (NP -> S) -> S;
+
+    C_John := c_John;
+    C_Peter := c_Peter;
+    C_Paul := c_Paul;
+    C_Mary := c_Mary;
+    
+    C_who := c_who;
+    
+    C_sleeps := c_sleeps;
+    C_barks := c_barks;
+    
+    C_loves := c_loves;
+    C_to_love := c_to_love;
+    
+    C_to_love_int := c_to_love_int;
+    
+    C_seems := c_seems;
+    
+    C_claims  := c_claims;
+    C_does_think := c_does_think;
+
+    C_matters := c_matters;
+    C_that_sleeps := c_that_sleeps; 
+    
+    C_fast := c_fast;
+    C_usually := c_usually;
+    
+    C_hence := c_hence;
+    
+    I_vp:= I_vp;
+    I_s:= I_s;
+    
+    (* Section 5.3.2. Quantification *)
+    
+    C_a := c_a;
+    C_some := c_some;
+    C_every := c_every;
+    C_everyone := c_everyone;
+    C_someone := c_someone;
+    
+    C_boy := c_boy;
+    C_cat := c_cat;
+    C_man := c_man;
+    C_woman := c_woman;
+    
+    C_loves_ows := c_loves_ows;
+
+    C_big := c_big;
+    C_smart := c_smart;
+
+    C_wants := c_wants;
+    C_tosleep := c_to_sleep;
+    C_claims' := c_claims';
+
+    C_kicked := c_kicked;
+    C_the := c_the;
+    C_bucket := c_bucket;
+    C_kicked_the_bucket := c_kicked_the_bucket;
+
+    Sa'' := (NP -> S) -> (NP -> S);
+    Sws := NP -> S;
+    
+    C_in_order := c_in_order;
+    C_on_time := c_on_time;
+    C_to_arrive := c_to_arrive;
+    C_left := c_left;
+    C_early := c_early;
+
+    I_s'' := I_s'';
+
+
+    C_certainly := c_certainly;
+    C_kind := c_smart;
+    C_itisnotthecase := c_itisnotthecase;
+    C_doesnot := c_doesnot;
+
+end
+
+
+lexicon TAGE_to_TAG_derivations =  TAG_derivations  <<  TAGEtoTAG
+
+lexicon TAGE_to_derived =  derived_trees  << TAGE_to_TAG_derivations
+
+lexicon TAGE_to_yield =  yield  <<  TAGE_to_derived
+
+
+

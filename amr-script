@@ -1,0 +1,143 @@
+acgc.opt amr.acg
+
+load o amr.acgo;
+
+evhol_sem realize Closure (C_sleeps I_s I_vp (C_man C_a)) : T;
+
+evhol_sem realize Closure (C_sleeps I_s C_doesnot (C_man C_a)) : T;
+
+evhol_sem realize Closure (C_sleeps I_s (C_certainly I_vp) (C_man C_a)) : T;
+
+evhol_sem realize Closure (C_sleeps I_s (C_certainly C_doesnot) (C_man C_a)) : T;
+
+evhol_sem realize Closure (C_sleeps (C_certainly I_s) I_vp (C_man C_a)) : T;
+
+evhol_sem realize Closure (C_sleeps (C_certainly I_s) C_doesnot (C_man C_a)) : T;
+
+evhol_sem realize Closure (C_tosleep (C_wants I_s I_vp C_John)) : T;
+
+evhol_sem realize Closure (C_sleeps I_s I_vp (C_woman (C_kind (C_smart C_a)) )) : T;
+
+evhol_sem realize Closure (C_loves I_s I_vp C_John (C_woman (C_kind (C_smart C_a)) )) : T;
+
+evhol_sem realize Closure (C_loves I_s C_doesnot C_John (C_woman (C_kind (C_smart C_a)) )) : T;
+
+evhol_sem realize Closure (C_loves I_s I_vp C_John C_Mary)  : T;
+
+evhol_sem realize Closure (C_loves I_s C_doesnot C_John C_Mary) : T;
+
+evhol_sem realize Closure (C_loves C_itisnotthecase I_vp C_John C_Mary) : T;
+
+evhol_sem realize Closure (C_loves I_s I_vp (C_boy C_every) C_Mary)  : T;
+
+evhol_sem realize Closure (C_tosleep (C_wants I_s I_vp (C_boy C_every))) : T;
+
+
+evhol_sem realize Closure (C_loves I_s C_doesnot C_John (C_woman (C_kind (C_smart C_a)) )) : T;
+
+evhol_sem realize Closure (C_loves I_s C_doesnot C_John (C_woman (C_kind (C_smart C_every)) )) : T;
+
+evhol_sem realize Closure (C_loves C_itisnotthecase I_vp C_John (C_woman (C_kind (C_smart C_every)) )) : T;
+
+evhol_sem realize Closure (C_tosleep (C_wants I_s C_doesnot (C_boy C_every))) : T;
+
+evhol_sem realize Closure (C_tosleep (C_wants C_itisnotthecase I_vp (C_boy C_every))) : T;
+
+
+evhol_sem realize Closure (C_tosleep (C_wants C_itisnotthecase I_vp (C_boy C_every))) : T;
+
+evhol_sem realize Closure (C_sleeps I_s C_doesnot (C_boy C_every)) : T;
+
+evhol_sem realize Closure (C_sleeps I_s C_doesnot (C_boy C_a)) : T;
+
+evhol_sem realize Closure (C_sleeps C_itisnotthecase I_vp (C_boy C_a)) : T;
+
+evhol_sem realize Closure (C_sleeps C_itisnotthecase I_vp (C_boy C_a)) : T;
+
+evhol_sem realize Closure (C_tosleep (C_wants C_itisnotthecase I_vp (C_boy C_a))) : T;
+
+evhol_sem realize Closure (C_tosleep (C_wants I_s C_doesnot (C_boy C_a))) : T;
+
+
+
+
+
+
+evhol_sem realize Closure (C_sleeps I_s C_doesnot (C_John)) : T;
+
+evhol_sem realize Closure (C_sleeps C_itisnotthecase I_vp (C_John)) : T;
+
+
+
+evhol_sem realize Closure (C_sleeps I_s C_doesnot (C_boy C_a)) : T;
+
+evhol_sem realize Closure (C_sleeps C_itisnotthecase I_vp (C_boy C_a)) : T;
+
+evhol_sem realize Closure (C_sleeps I_s C_doesnot (C_boy C_every)) : T;
+
+evhol_sem realize Closure (C_sleeps C_itisnotthecase I_vp (C_boy C_every)) : T;
+
+
+
+evhol_sem realize Closure (C_tosleep (C_wants I_s C_doesnot  C_John)) : T;
+evhol_sem realize Closure (C_tosleep (C_wants C_itisnotthecase I_vp C_John)) : T;
+
+
+
+
+
+evhol_sem realize Closure (C_tosleep (C_wants I_s C_doesnot  (C_boy C_a))) : T;
+evhol_sem realize Closure (C_tosleep (C_wants C_itisnotthecase I_vp (C_boy C_a))) : T;
+
+
+evhol_sem realize Closure (C_tosleep (C_wants I_s C_doesnot  (C_boy C_every))) : T;
+evhol_sem realize Closure (C_tosleep (C_wants C_itisnotthecase I_vp (C_boy C_every))) : T;
+
+
+evhol_sem realize Closure (C_tosleep (C_wants I_s I_vp (C_boy C_a))) : T;
+
+
+evhol_sem realize Closure (C_tosleep (C_wants I_s I_vp (C_boy C_every))) : T;
+
+
+
+
+TAGE_to_yield  realize Closure (C_tosleep (C_wants I_s C_doesnot  (C_boy C_a))) : T;
+TAGE_to_yield  realize Closure (C_tosleep (C_wants C_itisnotthecase I_vp (C_boy C_a))) : T;
+
+
+TAGE_to_yield  realize Closure (C_tosleep (C_wants I_s C_doesnot  (C_boy C_every))) : T;
+TAGE_to_yield realize Closure (C_tosleep (C_wants C_itisnotthecase I_vp (C_boy C_every))) : T;
+
+
+TAGE_to_yield  realize Closure (C_tosleep (C_wants I_s I_vp (C_boy C_a))) : T;
+
+TAGE_to_yield  realize Closure (C_tosleep (C_wants I_s I_vp (C_boy C_every))) : T;
+
+TAGE_to_yield realize Closure (C_loves I_s (C_fast I_vp) C_John C_Mary) : T;
+
+
+TAGE_to_yield realize Closure (C_loves I_s  I_vp C_John (C_woman C_every)) : T;
+evhol_sem realize Closure (C_loves I_s  I_vp C_John (C_woman C_every)) : T;
+
+
+
+TAGE_to_yield realize Closure (C_loves I_s  I_vp (C_woman C_every) C_John ) : T;
+evhol_sem realize Closure (C_loves I_s  I_vp  (C_woman C_every) C_John ) : T;
+
+
+
+TAGE_to_yield realize Closure (C_loves I_s  C_doesnot (C_woman C_every) C_John ) : T;
+
+evhol_sem realize Closure (C_loves  I_s  C_doesnot  (C_woman C_every) C_John ) : T;
+
+
+TAGE_to_yield realize Closure ( C_loves I_s  C_doesnot (C_woman  (C_kind C_every)) C_John ) : T;
+
+evhol_sem realize Closure ( C_loves I_s  C_doesnot (C_woman  (C_kind C_every)) C_John ) : T;
+
+
+
+
+
+
