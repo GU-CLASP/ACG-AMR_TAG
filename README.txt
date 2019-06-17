@@ -1,4 +1,7 @@
-The directory contains the acg files for running examples from "From Tree Adjoining Grammars to Higher Order Representations of Abstract Meaning Representations via Abstract Categorial Grammars" by Rasmus Blanck and Aleksandre Maskharashvili
+The directory contains the acg files for running examples from the paper 
+"From Tree Adjoining Grammars to Higher Order Representations of 
+Abstract Meaning Representations via Abstract Categorial Grammars" 
+by Rasmus Blanck and Aleksandre Maskharashvili
 
 To run the examples, one needs the acgc.opt (or acgc) and acg.opt (or
 acg) binaries. The software (called the ACG toolkit) and the installation procedure can be
